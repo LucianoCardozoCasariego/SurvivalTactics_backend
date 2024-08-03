@@ -1,6 +1,6 @@
 package com.lcc.SurvivalTactics.configuration
 
-import com.lcc.SurvivalTactics.models.RolesModel
+import com.lcc.SurvivalTactics.models.RolesEnum
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationProvider
@@ -22,7 +22,6 @@ class SecurityConfiguration(private val authenticationProvider: AuthenticationPr
             .csrf { conf -> conf.disable() }
             .authorizeHttpRequests { auth ->
                 auth.requestMatchers(*routes.publicRoutes.toTypedArray()).permitAll()
-                auth.requestMatchers(*routes.adminRoutes.toTypedArray()).hasRole(RolesModel.ADMIN.name)
                 auth.anyRequest().authenticated()
             }
             .sessionManagement { session ->

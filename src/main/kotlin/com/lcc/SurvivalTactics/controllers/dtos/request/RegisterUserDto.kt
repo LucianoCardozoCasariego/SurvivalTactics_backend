@@ -1,6 +1,6 @@
 package com.lcc.SurvivalTactics.controllers.dtos.request
 
-import com.lcc.SurvivalTactics.models.RolesModel
+import com.lcc.SurvivalTactics.models.RolesEnum
 import com.lcc.SurvivalTactics.models.UserModel
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
@@ -22,7 +22,7 @@ class RegisterUserDto {
         user.email = this.email
         user.password = this.password
         user.username = this.username
-        user.roles = RolesModel.USER
+        user.roles = RolesEnum.USER
         return user
     }
 }

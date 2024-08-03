@@ -6,7 +6,11 @@ import com.lcc.SurvivalTactics.controllers.dtos.response.UserDto
 import com.lcc.SurvivalTactics.controllers.dtos.response.UserWitdTokenDto
 import com.lcc.SurvivalTactics.exceptions.EmailTakenError
 import com.lcc.SurvivalTactics.exceptions.NotFoundError
+import com.lcc.SurvivalTactics.models.CityModel
 import com.lcc.SurvivalTactics.models.UserModel
+import com.lcc.SurvivalTactics.models.buildings.Center
+import com.lcc.SurvivalTactics.repositories.CenterRepository
+import com.lcc.SurvivalTactics.repositories.CityRepository
 import com.lcc.SurvivalTactics.repositories.UserRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.AuthenticationManager
@@ -18,18 +22,36 @@ import java.util.*
 @Service
 class userServiceImpl(
     private val userRepository: UserRepository,
+    private val cityRepository: CityRepository,
+    private val centerRepository: CenterRepository,
+
     private var passEncoder: PasswordEncoder,
     private var authManager: AuthenticationManager,
     private var userDetailsService: CustpmUserDetailsService,
     private var tokenService: TokenService,
     private var jwtProperties: JwtProperties,
 ) {
+    ////TODO separar en user service del AuthServie
+
     fun createUser(user: UserModel): UserWitdTokenDto? {
         var userFounded = this.userRepository.findByEmail(user.email)
 
         if (userFounded == null) {
             user.password = this.passEncoder.encode(user.password)
             val savedUser = this.userRepository.save(user)
+
+            //TODO crear un metodo que genere una ciudad inicial
+            //TODO terminar de agregar los demas edificios + refactor a los que ya estan
+            val city = CityModel(user.username + "'s city")
+            city.owner = savedUser
+            this.cityRepository.save(city)
+
+
+
+            val center: Center = Center(20, "Frutas")
+            center.city = city
+            this.centerRepository.save(center)
+
 
             return UserWitdTokenDto(UserDto.fromModel(savedUser), createToken(savedUser.email))
         } else {

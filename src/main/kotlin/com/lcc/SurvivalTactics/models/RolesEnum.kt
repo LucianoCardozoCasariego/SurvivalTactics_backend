@@ -1,6 +1,6 @@
 package com.lcc.SurvivalTactics.models
 
-enum class RolesModel {
+enum class RolesEnum {
     USER,
     ADMIN,
     SUPER_ADMIN
